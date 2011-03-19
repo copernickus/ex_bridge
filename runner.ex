@@ -5,6 +5,11 @@ module Runner
     process ["test"]
   end
 
+  def process(["setup"])
+    execute "git submodule update --init"
+    execute "cd deps/mochiweb-1.5.2 && make"
+  end
+
   def process(["test"])
     execute "exunit test/*_test.ex"
   end
