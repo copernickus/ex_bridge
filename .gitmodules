@@ -1,0 +1,3 @@
+[submodule "deps/mochiweb-1.5.2"]
+	path = deps/mochiweb-1.5.2
+	url = https://github.com/mochi/mochiweb.git
