@@ -10,7 +10,11 @@ object ExBridge::Mochiweb::Request
 
   def serve_file(path, headers := [])
     if @docroot
-      Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)] )
+      if ~r"\.\.".match?(path)
+        respond(403, {}, "Forbidden")
+      else
+        Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)] )
+      end
     else
       self.error { 'nodocroot, "Cannot send file without docroot" }
     end

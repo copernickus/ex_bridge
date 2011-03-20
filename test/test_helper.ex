@@ -45,6 +45,13 @@ module RequestCase
     "attachment; filename=\"cool.ex\"" = headers["Content-Disposition"]
   end
 
+  def serve_forbidden_file_test
+    self.start -> (r) serve_forbidden_file_loop(r)
+    response = HTTPClient.request('get, "http://127.0.0.1:#{port}/")
+    { status, _headers, body } = response
+    403 = status
+  end
+
   protected
 
   def port
@@ -79,5 +86,9 @@ module RequestCase
 
   def serve_file_with_headers_loop(request)
     request.serve_file "test/test_helper.ex", "Content-Disposition": "attachment; filename=\"cool.ex\""
+  end
+
+  def serve_forbidden_file_loop(request)
+    request.serve_file "test/../test/test_helper.ex"
   end
 end
