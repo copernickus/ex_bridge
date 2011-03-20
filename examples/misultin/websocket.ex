@@ -24,8 +24,26 @@ module Chat
       Erlang.misultin.stop
     end
 
-    def handle_websocket(ws)
-      % Not yet
+    def handle_websocket(socket)
+      socket_loop(socket)
+    end
+
+    def socket_loop(socket)
+      receive
+      match {'browser, data}
+        Erlang.apply(socket, 'send, [$"output ! OMG"])
+        socket_loop(socket)
+      match 'closed
+        'closed
+      match { 'chat_server, { 'message, message } }
+        Erlang.apply(socket, 'send, [[$"output ! ", message]])
+        socket_loop(socket)
+      match _
+        socket_loop(socket)
+      after 10000
+        Erlang.apply(socket, 'send, [$"clock ! tick" + Erlang.io_lib.fwrite($"~p", [Erlang.time])])
+        socket_loop(socket)
+      end
     end
 
     def handle_http(request)
