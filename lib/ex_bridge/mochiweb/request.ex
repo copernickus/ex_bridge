@@ -6,6 +6,7 @@ object ExBridge::Mochiweb::Request
   def respond(status, headers, body)
     response = { status, convert_headers(headers), body.to_bin }
     Erlang.apply(@request, 'respond, [response])
+    status
   end
 
   def request_method

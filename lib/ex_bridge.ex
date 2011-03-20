@@ -10,7 +10,25 @@ module ExBridge
   end
 
   def request(other, _, _ := nil)
-    self.error { 'nobridge, "No bridge for #{other.inspect}" }
+    self.error { 'nobridge, "No request bridge for #{other.inspect}" }
+  end
+
+  def websocket('mochiweb, socket)
+    ExBridge::Mochiweb::Websocket.new(socket)
+  end
+
+  def websocket('misultin, socket)
+    ExBridge::Misultin::Websocket.new(socket)
+  end
+
+  def websocket(other, _)
+    self.error { 'nobridge, "No websocket bridge for #{other.inspect}" }
+  end
+
+  module Websocket
+    def constructor(socket)
+      { 'socket: socket }
+    end
   end
 
   module Request
@@ -31,6 +49,7 @@ module ExBridge
           joined = File.join(@docroot, path)
           if File.regular?(joined)
             function()
+            200
           else
             self.respond(404, {:}, "Not Found")
           end
