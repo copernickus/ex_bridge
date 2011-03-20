@@ -5,8 +5,9 @@ object Mochiweb::RequestTest
 
   def respond_test
     start -> (r) basic_respond(r)
-    response = HTTPClient.request('get, "http://localhost:3000/")
-    { 200, { "Content-Type": "text/plain" }, "Hello World\n" } = response
+    response = HTTPClient.request('get, "http://127.0.0.1:3001/")
+    { 200, headers, "Hello world\n" } = response
+    "text/plain" = headers["Content-Type"]
   end
 
   def teardown(_)
@@ -29,7 +30,6 @@ object Mochiweb::RequestTest
     }
 
     { 'ok, _ } = Erlang.mochiweb_http.start options.to_list
-    Erlang.timer.sleep(5000)
   end
 
   def basic_respond(request)

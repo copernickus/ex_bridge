@@ -8,17 +8,17 @@ ExUnit.configure {:}
 
 % Start ibrowse client for testing
 Erlang.code.add_path $"deps/ibrowse/ebin"
-'ok = Erlang.ibrowse.start()
+{ 'ok, _ } = Erlang.ibrowse.start()
 
 module HTTPClient
   def request(verb, path)
     {'ok, status, headers, body} = Erlang.ibrowse.send_req(path.to_char_list, [], verb)
-    { status, convert_headers(headers), String.new(body) }
+    { Erlang.list_to_integer(status), convert_headers(headers), String.new(body) }
   end
 
   private
 
   def convert_headers(headers)
-    OrderedDict.new(headers.map -> ({k,v}) { String.new(k), String.new(v) })
+    OrderedDict.from_list(headers.map -> ({k,v}) { String.new(k), String.new(v) })
   end
 end
