@@ -4,24 +4,21 @@ object Mochiweb::RequestTest
   proto ExUnit::Case
   proto RequestCase
 
+  % Tests that are not supported
+
+  % Hooks
+
+  def server_name
+    'mochiweb
+  end
+
   % Hook to start each server.
   def start(function)
-    options = {
-      'name: 'mochiweb_test,
-      'port: 3001,
-      'loop: -> (req)
-        try
-          function(ExBridge.request('mochiweb, req))
-        catch error: kind
-          IO.puts { error, kind }
-        end
-      end
-    }
-
+    options = self.server_options(function).merge 'name: 'mochiweb_test
     { 'ok, _ } = Erlang.mochiweb_http.start options.to_list
   end
 
   def teardown(_)
-    Erlang.mochiweb_http.stop 'mochiweb_test
+    'ok = Erlang.mochiweb_http.stop 'mochiweb_test
   end
 end

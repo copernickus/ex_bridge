@@ -1,16 +1,23 @@
 Code.require File.expand_path("../test_helper", __FILE__)
 
-object Mochiweb::RequestTest
+object Misultin::RequestTest
   proto ExUnit::Case
   proto RequestCase
 
+  % Tests that are not supported
+
+  def serve_file_with_headers_test
+  end
+
+  % Hooks
+
+  def server_name
+    'misultin
+  end
+
   % Hook to start each server.
   def start(function)
-    options = {
-      'port: 3001,
-      'loop: -> (req) function(ExBridge.request('misultin, req))
-    }
-
+    options = self.server_options(function)
     { 'ok, _ } = Erlang.misultin.start_link options.to_list
   end
 

@@ -1,13 +1,19 @@
 % elixir: cache
 
 object ExBridge::Mochiweb::Request
-  def constructor(request)
-    { 'request: request }
-  end
+  proto ExBridge::Request
 
   def respond(status, headers, body)
     response = { status, convert_headers(headers), body.to_bin }
     Erlang.apply(@request, 'respond, [response])
+  end
+
+  def serve_file(path, headers := [])
+    if @docroot
+      Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)] )
+    else
+      self.error { 'nodocroot, "Cannot send file without docroot" }
+    end
   end
 
   private
