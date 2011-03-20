@@ -9,6 +9,7 @@ module Runner
     execute "git submodule update --init"
     execute "cd deps/mochiweb && make"
     execute "cd deps/ibrowse && make"
+    execute "cd deps/misultin && make"
   end
 
   def process(["test"])
