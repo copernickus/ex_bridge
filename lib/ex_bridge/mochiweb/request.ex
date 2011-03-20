@@ -8,15 +8,19 @@ object ExBridge::Mochiweb::Request
     Erlang.apply(@request, 'respond, [response])
   end
 
+  def request_method
+    Erlang.apply(@request, 'get, ['method])
+  end
+
+  def path
+    raw_path = Erlang.apply(@request, 'get, ['raw_path])
+    {path, _, _} = Erlang.mochiweb_util.urlsplit_path(raw_path)
+    String.new path
+  end
+
   def serve_file(path, headers := [])
-    if @docroot
-      if ~r"\.\.".match?(path)
-        respond(403, {}, "Forbidden")
-      else
-        Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)] )
-      end
-    else
-      self.error { 'nodocroot, "Cannot send file without docroot" }
+    self.serve_file_conditionally path, do
+      Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)])
     end
   end
 

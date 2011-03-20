@@ -8,16 +8,17 @@ object ExBridge::Misultin::Request
     Erlang.apply(@request, 'respond, response)
   end
 
+  def request_method
+    Erlang.apply(@request, 'get, ['method])
+  end
+
+  def path
+    { 'abs_path, path } = Erlang.apply(@request, 'get, ['uri])
+    String.new path
+  end
+
   def serve_file(path, [] := [])
-    if @docroot
-      if ~r"\.\.".match?(path)
-        respond(403, {}, "Forbidden")
-      else
-        Erlang.apply(@request, 'file, [File.join(@docroot, path).to_bin])
-      end
-    else
-      self.error { 'nodocroot, "Cannot send file without docroot" }
-    end
+    self.serve_file_conditionally path, -> Erlang.apply(@request, 'file, [File.join(@docroot, path).to_bin])
   end
 
   def serve_file(_path, _headers)

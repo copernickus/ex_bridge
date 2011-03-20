@@ -1,2 +1,2 @@
-lib/*.exb
+*.exb
 erl_crash.dump
