@@ -9,7 +9,7 @@
 % And then access localhost:3000 in your browser.
 
 % Add mochiweb as dependency
-Erlang.code.add_path $"deps/mochiweb-1.5.2/ebin"
+Erlang.code.add_path $"deps/mochiweb/ebin"
 
 % Load code inside lib
 Code.unshift_path "lib"

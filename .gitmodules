@@ -1,3 +1,6 @@
-[submodule "deps/mochiweb-1.5.2"]
-	path = deps/mochiweb-1.5.2
+[submodule "deps/mochiweb"]
+	path = deps/mochiweb
 	url = https://github.com/mochi/mochiweb.git
+[submodule "deps/ibrowse"]
+	path = deps/ibrowse
+	url = https://github.com/cmullaparthi/ibrowse.git

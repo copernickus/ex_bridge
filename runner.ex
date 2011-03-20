@@ -7,7 +7,8 @@ module Runner
 
   def process(["setup"])
     execute "git submodule update --init"
-    execute "cd deps/mochiweb-1.5.2 && make"
+    execute "cd deps/mochiweb && make"
+    execute "cd deps/ibrowse && make"
   end
 
   def process(["test"])
