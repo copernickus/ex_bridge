@@ -13,10 +13,6 @@ module ExBridge
     self.error { 'nobridge, "No request bridge for #{other.inspect}" }
   end
 
-  def websocket('mochiweb, socket)
-    ExBridge::Mochiweb::Websocket.new(socket)
-  end
-
   def websocket('misultin, socket)
     ExBridge::Misultin::Websocket.new(socket)
   end

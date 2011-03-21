@@ -4,6 +4,6 @@ object ExBridgeTest
   proto ExUnit::Case
 
   def no_support_test
-    self.assert_error { 'nobridge, "No bridge for 'webrick" }, -> ExBridge.request('webrick, [])
+    self.assert_error { 'nobridge, "No request bridge for 'webrick" }, -> ExBridge.request('webrick, [])
   end
 end
