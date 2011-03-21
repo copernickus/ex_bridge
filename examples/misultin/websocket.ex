@@ -7,29 +7,76 @@ Code.require "ex_bridge/misultin"
 
 module Chat
   object Backend
+    module Mixin
+      def start
+        { 'ok, _ } = GenServer.start_link({'local, 'chat_backend}, self.new, [])
+      end
+
+      def new_user
+        GenServer.call('chat_backend, 'new_user)
+      end
+
+      def set_nick(nick)
+        GenServer.cast('chat_backend, { 'set_nick, Process.self, nick })
+      end
+
+      def send_message(message)
+        GenServer.cast('chat_backend, { 'message, Process.self, message })
+      end
+    end
+
     def constructor()
-      { 'users: [] }
+      { 'users: {:} }
+    end
+
+    def broadcast(message)
+      @users.each do (pid, _)
+        pid <- { 'chat_server, { 'message, message } }
+      end
     end
 
     protected
 
     def init()
+      Process.flag('trap_exit, true)
       { 'ok, self }
+    end
+
+    def handle_call('new_user, { pid, _ref })
+      Process.link(pid) % Link to the given socket process
+      updated = self.update_ivar('users, _.set(pid, "Unknown"))
+      { 'reply, 'ok, updated }
     end
 
     def handle_call(_request, _from)
       { 'reply, 'undef, self }
     end
 
-    def handle_cast(_msg)
-      { 'no_reply, self }
+    def handle_cast({ 'set_nick, from, nick })
+      updated = self.update_ivar('users, _.set(from, nick))
+      { 'noreply, updated }
     end
 
-    def handle_info(_msg)
-      { 'no_reply, self }
+    def handle_cast({ 'message, from, text })
+      broadcast "#{@users[from]}: #{text}"
+      { 'noreply, self }
     end
 
-    def terminate(reason)
+    def handle_cast(_request)
+      { 'noreply, self }
+    end
+
+    def handle_info({ 'EXIT, from, _ })
+      updated = self.update_ivar('users, _.delete(from))
+      updated.broadcast "#{@users[from]} left the room."
+      { 'noreply, updated }
+    end
+
+    def handle_info(_request)
+      { 'noreply, self }
+    end
+
+    def terminate(_reason)
       'ok
     end
 
@@ -57,6 +104,7 @@ module Chat
     end
 
     def handle_websocket(socket)
+      Chat::Backend.new_user
       socket_loop(socket)
     end
 
@@ -68,9 +116,9 @@ module Chat
 
         case string.split(~r" \<\- ", 2)
         match ["msg", msg]
-          % Do something
+          Chat::Backend.send_message(msg)
         match ["nick", nick]
-          % Do something
+          Chat::Backend.set_nick(nick)
         else
           socket.send "status <- received #{string}"
         end
@@ -81,8 +129,7 @@ module Chat
         self.exit(0)
       match { 'chat_server, { 'message, message } }
         string = String.new(message)
-        IO.puts "SOCKET CHATSERVER #{string}"
-        socket.send "output ! #{string}"
+        socket.send "output <- #{string}"
         socket_loop(socket)
       match other
         IO.puts "SOCKET UNKNOWN #{other}"
@@ -109,4 +156,7 @@ module Chat
   end
 end
 
+Chat::Backend.start
 Chat::Server.start
+
+IO.puts "Starting on http://127.0.0.1:8080/"
