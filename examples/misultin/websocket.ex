@@ -92,8 +92,7 @@ module Chat
       options = {
         'port: 8080,
         'loop: -> (req) handle_http(ExBridge.request('misultin, req, 'docroot: docroot)),
-        'ws_loop: -> (socket) handle_websocket(ExBridge.websocket('misultin, socket)),
-        'ws_autoexit: false
+        'ws_loop: -> (socket) handle_websocket(ExBridge.websocket('misultin, socket))
       }
 
       { 'ok, _ } = Erlang.misultin.start_link options.to_list
@@ -124,9 +123,6 @@ module Chat
         end
 
         socket_loop(socket)
-      match 'closed
-        IO.puts "SOCKET CLOSED"
-        self.exit(0)
       match { 'chat_server, { 'message, message } }
         string = String.new(message)
         socket.send "output <- #{string}"
