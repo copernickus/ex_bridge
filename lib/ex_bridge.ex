@@ -35,8 +35,6 @@ module ExBridge
       { 'request: request, 'docroot: docroot && docroot.to_bin }
     end
 
-    protected
-
     def serve_file_conditionally(path, function)
       if @docroot
         if ~r"\.\.".match?(path)

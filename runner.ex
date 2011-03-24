@@ -13,7 +13,7 @@ module Runner
   end
 
   def process(["test"])
-    execute "exunit test/*_test.ex test/*/*_test.ex"
+    execute "time exunit test/*_test.ex test/*/*_test.ex"
   end
 
   def process(other)

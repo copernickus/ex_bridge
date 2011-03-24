@@ -52,7 +52,7 @@ module RequestCase
     { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/accessors")
   end
 
-  protected
+  % Server loops
 
   def respond_loop(request)
     request.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
