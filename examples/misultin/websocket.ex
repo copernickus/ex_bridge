@@ -25,8 +25,8 @@ module Chat
       end
     end
 
-    def constructor()
-      { 'users: {:} }
+    def initialize()
+      @('users: {:})
     end
 
     def broadcast(message)

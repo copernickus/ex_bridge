@@ -22,17 +22,17 @@ module ExBridge
   end
 
   module Websocket
-    def constructor(socket)
-      { 'socket: socket }
+    def initialize(socket)
+      @('socket: socket)
     end
   end
 
   module Request
     attr_reader ['docroot]
 
-    def constructor(request, options)
+    def initialize(request, options)
       docroot = options['docroot]
-      { 'request: request, 'docroot: docroot && docroot.to_bin }
+      @('request: request, 'docroot: docroot && docroot.to_bin)
     end
 
     def serve_file_conditionally(path, function)

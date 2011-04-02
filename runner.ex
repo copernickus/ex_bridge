@@ -13,6 +13,7 @@ module Runner
   end
 
   def process(["test"])
+    execute "find . -type f -name \"*.exb\" -exec rm -f {} \\;"
     execute "time exunit test/*_test.ex test/*/*_test.ex"
   end
 
