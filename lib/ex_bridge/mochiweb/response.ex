@@ -9,7 +9,7 @@ object ExBridge::Mochiweb::Response
     status
   end
 
-  def serve_file(path, headers := [])
+  def serve_file(path, headers := {:})
     serve_file_conditionally path, do
       Erlang.apply(@request, 'serve_file, [path.to_char_list, @docroot, convert_headers(headers)])
     end

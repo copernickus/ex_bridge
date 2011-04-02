@@ -9,7 +9,7 @@ object ExBridge::Misultin::Response
     status
   end
 
-  def serve_file(path, [] := [])
+  def serve_file(path, {:} := {:})
     self.serve_file_conditionally path, -> Erlang.apply(@request, 'file, [File.join(@docroot, path).to_bin])
   end
 

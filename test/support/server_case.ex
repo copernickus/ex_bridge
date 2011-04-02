@@ -27,6 +27,18 @@ module ServerCase
     "text/plain" = headers["Content-Type"]
   end
 
+  def respond_file_test
+    response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/respond_file")
+    { 200, _headers, body } = response
+    self.assert_include "% ASSERTION FLAG", body
+  end
+
+  def respond_args_test
+    response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/respond_args")
+    { 200, headers, "Hello world\n" } = response
+    "text/plain" = headers["Content-Type"]
+  end
+
   def serve_file_test
     response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/serve_file")
     { 200, _headers, body } = response
@@ -56,6 +68,23 @@ module ServerCase
   % Server loops
 
   def respond_loop(_request, response)
+    response = response.body("Hello world\n")
+    "Hello world\n" = response.body
+    response = response.status(200)
+    200 = response.status
+    response = response.merge_headers "Content-Type": "text/plain"
+    { "Content-Type": "text/plain" } = response.headers
+    {:} = response.clear_headers.headers
+    response.respond
+  end
+
+  def respond_file_loop(_request, response)
+    response = response.file "test/test_helper.ex"
+    "test/test_helper.ex" = response.file
+    response.respond
+  end
+
+  def respond_args_loop(_request, response)
     response.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
   end
 
