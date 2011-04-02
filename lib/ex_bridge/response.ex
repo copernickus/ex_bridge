@@ -42,10 +42,6 @@ module ExBridge::Response
       @response.cookies @cookies.set(key, options.set('value, value))
     end
 
-    def clear
-      @response.cookies {:}
-    end
-
     def delete(key, options := {:})
       set(key, "deleted", options.merge('expires: unix_1970))
     end
