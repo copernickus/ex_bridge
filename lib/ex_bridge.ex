@@ -34,6 +34,14 @@ module ExBridge
       docroot = options['docroot]
       @('request: request, 'docroot: docroot && docroot.to_bin)
     end
+  end
+
+  module Response
+    attr_reader ['docroot]
+
+    def initialize(request, docroot)
+      @('request: request, 'docroot: docroot && docroot.to_bin)
+    end
 
     def serve_file_conditionally(path, function)
       if @docroot

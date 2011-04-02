@@ -2,7 +2,7 @@ Code.require File.expand_path("../test_helper", __FILE__)
 
 object Mochiweb::RequestTest
   proto ExUnit::Case
-  proto RequestCase
+  proto ServerCase
 
   def port
     3001

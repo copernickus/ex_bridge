@@ -1,18 +1,19 @@
-% Handles all tests for the request bridge. The server_options returns a
+% Handles all tests for the request/response bridge. The server_options returns a
 % function that dispatches an internal loop method based on the request path.
-module RequestCase
+module ServerCase
   def server_options(server_name, port)
     docroot = File.expand_path("../../..", __FILE__)
 
     {
       'port: port,
       'loop: -> (req)
-        request = ExBridge.request(server_name, req, 'docroot: docroot)
+        request  = ExBridge.request(server_name, req, 'docroot: docroot)
+        response = request.build_response
         try
           method = request.path[1, -1] + "_loop"
-          self.__send__ method.to_atom, [request]
+          self.__send__ method.to_atom, [request, response]
         catch error: kind
-          request.respond 500, {}, { error, kind, self.__stacktrace__ }.inspect
+          response.respond 500, {}, { error, kind, self.__stacktrace__ }.inspect
         end
       end
     }
@@ -54,29 +55,29 @@ module RequestCase
 
   % Server loops
 
-  def respond_loop(request)
-    request.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
+  def respond_loop(_request, response)
+    response.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
   end
 
-  def serve_file_loop(request)
-    request.serve_file "test/test_helper.ex"
+  def serve_file_loop(_request, response)
+    response.serve_file "test/test_helper.ex"
   end
 
-  def serve_file_with_headers_loop(request)
-    request.serve_file "test/test_helper.ex", "Content-Disposition": "attachment; filename=\"cool.ex\""
+  def serve_file_with_headers_loop(_request, response)
+    response.serve_file "test/test_helper.ex", "Content-Disposition": "attachment; filename=\"cool.ex\""
   end
 
-  def serve_unavailable_file_loop(request)
-    request.serve_file "test/test_helper.ex.unknown"
+  def serve_unavailable_file_loop(_request, response)
+    response.serve_file "test/test_helper.ex.unknown"
   end
 
-  def serve_forbidden_file_loop(request)
-    request.serve_file "test/../test/test_helper.ex"
+  def serve_forbidden_file_loop(_request, response)
+    response.serve_file "test/../test/test_helper.ex"
   end
 
-  def accessors_loop(request)
+  def accessors_loop request, response
     'GET         = request.request_method
     "/accessors" = request.path
-    request.respond 200, {}, "Ok"
+    response.respond 200, {}, "Ok"
   end
 end

@@ -2,7 +2,7 @@ Code.require File.expand_path("../test_helper", __FILE__)
 
 object Misultin::RequestTest
   proto ExUnit::Case
-  proto RequestCase
+  proto ServerCase
 
   def port
     3002
