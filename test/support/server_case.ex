@@ -68,13 +68,18 @@ module ServerCase
   % Server loops
 
   def respond_loop(_request, response)
-    response = response.body("Hello world\n")
-    "Hello world\n" = response.body
     response = response.status(200)
     200 = response.status
-    response = response.merge_headers "Content-Type": "text/plain"
-    { "Content-Type": "text/plain" } = response.headers
-    {:} = response.clear_headers.headers
+
+    response = response.headers.merge "Content-Type": "text/plain"
+    { "Content-Type": "text/plain" } = response.headers.to_dict
+    "text/plain" = response.headers["Content-Type"]
+    another_response = response.headers.clear
+    {:} = another_response.headers.to_dict
+
+    response = response.body("Hello world\n")
+    "Hello world\n" = response.body
+
     response.respond
   end
 

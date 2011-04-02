@@ -1,19 +1,42 @@
 % elixir: cache
 
 module ExBridge::Response
-  attr_reader ['docroot, 'headers]
-  attr_accessor ['body, 'file, 'status]
+  object Headers
+    def initialize(response, headers)
+      @('response: response, 'headers: headers)
+    end
+
+    def [](key)
+      @headers[key]
+    end
+
+    def merge(headers)
+      @response.headers(@headers.merge(headers))
+    end
+
+    def clear
+      @response.headers({:})
+    end
+
+    def delete(key)
+      @response.headers(@headers.delete(key))
+    end
+
+    def to_dict
+      @headers
+    end
+  end
+
+  attr_reader   ['docroot]
+  attr_writer   ['headers]
+  attr_accessor ['status, 'body, 'file]
 
   def initialize(request, docroot)
     @('request: request, 'docroot: docroot && docroot.to_bin, 'headers: {:})
   end
 
-  def merge_headers(headers)
-    @('headers, @headers.merge(headers))
-  end
-
-  def clear_headers
-    @('headers, {:})
+  def headers
+    ExBridge::Response::Headers.new(self, @headers)
   end
 
   def respond
