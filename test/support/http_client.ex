@@ -10,6 +10,16 @@ module HTTPClient
   private
 
   def convert_headers(headers)
-    OrderedDict.from_list(headers.map -> ({k,v}) { String.new(k), String.new(v) })
+    HTTPClient::PropList.new headers.map -> ({k,v}) { String.new(k), String.new(v) }
+  end
+
+  object PropList
+    def initialize(list)
+      @('list: Erlang.lists.sort(list))
+    end
+
+    def [](key)
+      Erlang.proplists.get_all_values(key, @list)
+    end
   end
 end

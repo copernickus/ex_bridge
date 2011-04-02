@@ -24,7 +24,7 @@ module ServerCase
   def respond_test
     response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/respond")
     { 200, headers, "Hello world\n" } = response
-    "text/plain" = headers["Content-Type"]
+    ["text/plain"] = headers["Content-Type"]
   end
 
   def respond_file_test
@@ -36,7 +36,7 @@ module ServerCase
   def respond_args_test
     response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/respond_args")
     { 200, headers, "Hello world\n" } = response
-    "text/plain" = headers["Content-Type"]
+    ["text/plain"] = headers["Content-Type"]
   end
 
   def serve_file_test
@@ -48,7 +48,7 @@ module ServerCase
   def serve_file_with_headers_test
     response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/serve_file_with_headers")
     { 200, headers, _body } = response
-    "attachment; filename=\"cool.ex\"" = headers["Content-Disposition"]
+    ["attachment; filename=\"cool.ex\""] = headers["Content-Disposition"]
   end
 
   def serve_forbidden_file_test
@@ -63,6 +63,16 @@ module ServerCase
 
   def accessors_test
     { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/accessors")
+  end
+
+  def cookies_test
+    response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/cookies")
+    { 200, headers, "" } = response
+    cookies = headers["Set-Cookie"]
+    3 = cookies.size
+    "key1=value1; httponly" = cookies[0]
+    "key2=value2; path=/blog; domain=plataformatec.com.br; secure" = cookies[1]
+    "key3=deleted; expires=1970-01-01 00:00:01; path=/blog; httponly" = cookies[2]
   end
 
   % Server loops
@@ -107,6 +117,13 @@ module ServerCase
 
   def serve_forbidden_file_loop(_request, response)
     response.serve_file "test/../test/test_helper.ex"
+  end
+
+  def cookies_loop(_request, response)
+    response = response.cookies.set 'key1, "value1"
+    response = response.cookies.set 'key2, "value2", 'domain: "plataformatec.com.br", 'path: "/blog", 'secure: true, 'httponly: false
+    response = response.cookies.delete 'key3, 'path: "/blog"
+    response.respond
   end
 
   def accessors_loop request, response
