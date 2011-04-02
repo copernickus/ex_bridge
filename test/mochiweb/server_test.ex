@@ -1,6 +1,6 @@
 Code.require File.expand_path("../test_helper", __FILE__)
 
-object Mochiweb::RequestTest
+object Mochiweb::ServerTest
   proto ExUnit::Case
   proto ServerCase
 
