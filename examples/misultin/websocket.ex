@@ -137,14 +137,15 @@ module Chat
     end
 
     def handle_http(request)
+      response = request.build_response
       status = case { request.request_method, request.path }
       match { 'GET, "/chat.html" }
         body = File.read File.join(request.docroot, "chat.html")
-        request.respond 200, { "Content-Type": "text/html" }, body
+        response.respond 200, { "Content-Type": "text/html" }, body
       match { 'GET, path }
-        request.serve_file path[1,-1]
+        response.serve_file path[1,-1]
       else
-        request.respond 404, {}, "Not Found"
+        response.respond 404, {}, "Not Found"
       end
 
       IO.puts "HTTP #{request.request_method} #{status} #{request.path}"

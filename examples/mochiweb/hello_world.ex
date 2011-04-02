@@ -29,7 +29,8 @@ module MochiwebSample
   private
 
   def loop(request)
-    request.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
+    response = request.build_response
+    response.respond 200, { "Content-Type": "text/plain" }, "Hello world\n"
   end
 end
 
