@@ -40,6 +40,6 @@ module ExBridge::Request
   end
 
   def upcase_headers([], acc)
-    String.new acc.reverse
+    acc.reverse.to_bin
   end
 end

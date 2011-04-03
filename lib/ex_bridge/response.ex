@@ -63,7 +63,7 @@ module ExBridge::Response
 
   def initialize(request, options)
     docroot = options['docroot]
-    @('request: request, 'docroot: docroot && docroot.to_bin, 'headers: {:}, 'cookies: {:})
+    @('request: request, 'docroot: docroot, 'headers: {:}, 'cookies: {:})
   end
 
   def headers

@@ -4,7 +4,7 @@ Erlang.code.add_path $"deps/ibrowse/ebin"
 module HTTPClient
   def request(verb, path, headers := {:})
     {'ok, status, headers, body} = Erlang.ibrowse.send_req(path.to_char_list, decode_headers(headers), verb)
-    { Erlang.list_to_integer(status), encode_headers(headers), String.new(body) }
+    { Erlang.list_to_integer(status), encode_headers(headers), body.to_bin }
   end
 
   private
@@ -14,7 +14,7 @@ module HTTPClient
   end
 
   def encode_headers(headers)
-    HTTPClient::PropList.new headers.map -> ({k,v}) { String.new(k), String.new(v) }
+    HTTPClient::PropList.new headers.map -> ({k,v}) { k.to_bin, v.to_bin }
   end
 
   object PropList

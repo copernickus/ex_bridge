@@ -10,13 +10,13 @@ object ExBridge::Mochiweb::Request
   def path
     raw_path = Erlang.apply(@request, 'get, ['raw_path])
     {path, _, _} = Erlang.mochiweb_util.urlsplit_path(raw_path)
-    String.new path
+    path.to_bin
   end
 
   def headers
     @headers || begin
       list = Erlang.mochiweb_headers.to_list(Erlang.apply(@request, 'get, ['headers]))
-      list = list.map -> ({x,y}) { upcase_headers(x.to_char_list), String.new(y) }
+      list = list.map -> ({x,y}) { upcase_headers(x.to_char_list), y.to_bin }
       OrderedDict.from_list list
     end
   end

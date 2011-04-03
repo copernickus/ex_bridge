@@ -9,13 +9,13 @@ object ExBridge::Misultin::Request
 
   def path
     { 'abs_path, path } = Erlang.apply(@request, 'get, ['uri])
-    String.new path
+    path.to_bin
   end
 
   def headers
     @headers || begin
       list = Erlang.apply(@request, 'get, ['headers])
-      list = list.map -> ({x,y}) { upcase_headers(x), String.new(y) }
+      list = list.map -> ({x,y}) { upcase_headers(x), y.to_bin }
       OrderedDict.from_list list
     end
   end

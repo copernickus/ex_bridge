@@ -4,7 +4,7 @@ object ExBridge::Mochiweb::Response
   proto ExBridge::Response
 
   def respond(status, headers, body)
-    response = { status, convert_headers(headers), body.to_bin }
+    response = { status, convert_headers(headers), body }
     Erlang.apply(@request, 'respond, [response])
     status
   end
@@ -18,6 +18,6 @@ object ExBridge::Mochiweb::Response
   private
 
   def convert_headers(headers)
-    headers.to_list.map -> ({key, value}) {key.to_bin, value.to_bin}
+    headers.to_list
   end
 end
