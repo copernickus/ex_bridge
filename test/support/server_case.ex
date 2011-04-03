@@ -61,18 +61,22 @@ module ServerCase
     { 404, _headers, _body } = response
   end
 
-  def accessors_test
-    { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/accessors")
-  end
-
-  def cookies_test
-    response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/cookies")
+  def response_cookies_test
+    response = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/response_cookies")
     { 200, headers, "" } = response
     cookies = headers["Set-Cookie"]
     3 = cookies.size
     "key1=value1; httponly" = cookies[0]
     "key2=value2; path=/blog; domain=plataformatec.com.br; secure" = cookies[1]
     "key3=deleted; expires=1970-01-01 00:00:01; path=/blog; httponly" = cookies[2]
+  end
+
+  def request_accessors_test
+    { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/request_accessors")
+  end
+
+  def request_headers_test
+    { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/request_headers", "unknown-header": "set")
   end
 
   % Server loops
@@ -119,16 +123,23 @@ module ServerCase
     response.serve_file "test/../test/test_helper.ex"
   end
 
-  def cookies_loop(_request, response)
+  def response_cookies_loop(_request, response)
     response = response.cookies.set 'key1, "value1"
     response = response.cookies.set 'key2, "value2", 'domain: "plataformatec.com.br", 'path: "/blog", 'secure: true, 'httponly: false
     response = response.cookies.delete 'key3, 'path: "/blog"
     response.respond
   end
 
-  def accessors_loop request, response
-    'GET         = request.request_method
-    "/accessors" = request.path
+  def request_accessors_loop request, response
+    'GET = request.request_method
+    "/request_accessors" = request.path
+    response.respond 200, {}, "Ok"
+  end
+
+  def request_headers_loop request, response
+    ["127.0.0.1", _] = request.headers["Host"].split(~r(:))
+    "0" = request.headers["Content-Length"]
+    "set" = request.headers["Unknown-Header"]
     response.respond 200, {}, "Ok"
   end
 end

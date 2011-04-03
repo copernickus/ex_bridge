@@ -13,7 +13,15 @@ object ExBridge::Mochiweb::Request
     String.new path
   end
 
+  def headers
+    @headers || begin
+      list = Erlang.mochiweb_headers.to_list(Erlang.apply(@request, 'get, ['headers]))
+      list = list.map -> ({x,y}) { upcase_headers(x.to_char_list), String.new(y) }
+      OrderedDict.from_list list
+    end
+  end
+
   def build_response
-    ExBridge::Mochiweb::Response.new(@request, @docroot)
+    ExBridge::Mochiweb::Response.new(@request, @options)
   end
 end

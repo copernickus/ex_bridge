@@ -61,7 +61,8 @@ module ExBridge::Response
   attr_writer   ['headers, 'cookies]
   attr_accessor ['status, 'body, 'file]
 
-  def initialize(request, docroot)
+  def initialize(request, options)
+    docroot = options['docroot]
     @('request: request, 'docroot: docroot && docroot.to_bin, 'headers: {:}, 'cookies: {:})
   end
 

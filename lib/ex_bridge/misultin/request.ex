@@ -12,7 +12,15 @@ object ExBridge::Misultin::Request
     String.new path
   end
 
+  def headers
+    @headers || begin
+      list = Erlang.apply(@request, 'get, ['headers])
+      list = list.map -> ({x,y}) { upcase_headers(x), String.new(y) }
+      OrderedDict.from_list list
+    end
+  end
+
   def build_response
-    ExBridge::Misultin::Response.new(@request, @docroot)
+    ExBridge::Misultin::Response.new(@request, @options)
   end
 end

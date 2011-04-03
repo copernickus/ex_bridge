@@ -140,7 +140,7 @@ module Chat
       response = request.build_response
       status = case { request.request_method, request.path }
       match { 'GET, "/chat.html" }
-        body = File.read File.join(request.docroot, "chat.html")
+        body = File.read File.join(response.docroot, "chat.html")
         response.respond 200, { "Content-Type": "text/html" }, body
       match { 'GET, path }
         response.serve_file path[1,-1]

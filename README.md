@@ -8,28 +8,39 @@ ExBridge has two main APIs: one for the request and other for the response objec
 
 ### Request API
 
-* `request_method()` - Returns an atom with the request method, for example `'GET`
-* `path` - Returns the request path, for example `"/foo/bar"`
+* `request_method` - Returns an atom with the request method, for example `'GET`.
+* `path` - Returns the request path, for example `"/foo/bar"`.
+* `headers` - Returns all the headers given in the request as a Dict. Both keys and values are strings.
+* `memoize!` - Returns a new object where headers and cookies are memoized.
 
 ### Response API
 
-* `status` - Reads the currently set status code
-* `status(status)` - Sets the given *status* code
+* `status` - Reads the currently set status code.
+* `status(status)` - Sets the given *status* code.
 
-* `headers` - Reads the currently set headers
-* `merge_headers(headers)` - Adds the given *headers* to the current set
-* `clear_headers` - Clears the current headers set
+* `headers` - Returns an object to manipulate headers:
+    * `[](header)` - Reads the given *header*.
+    * `merge(headers)` - Adds the given *headers* to the current set.
+    * `clear` - Clears the current headers.
+    * `delete(header)` - Removes the given *header* from the set.
 
-* `body` - Read the currently set body
-* `body(body)` - Replaces the current body by the one given
+* `cookies` - Returns an object to manipulate headers:
+    * `[](key)` - Reads the cookie given by *key*.
+    * `set(key, value, options := {:})` - Sets a cookie with *key*, *value* and given *options*.
+    * `delete(key, options := {:})` - Removes the cookie given by *key*. Removing a cookie happens by setting its value to deleted and setting it expires date to 1970. All options given when creating a cookie must also be given when removing it.
 
-* `file` - Read the *filepath* currently set as response
-* `file(filepath)` - Return the file at *filepath* on respond
+    Cookie options can be *domain* (string), *path* (string), *expires* (datetime or string), *secure* (boolean) and *httponly* (boolean). All cookies are *httponly* by default.
 
-* `respond` - Respond to the client using the set status, headers and body values
+* `body` - Read the currently set body.
+* `body(body)` - Replaces the current body by the one given.
+
+* `file` - Read the *filepath* currently set as response.
+* `file(filepath)` - Return the file at *filepath* on respond.
+
+* `respond` - Respond to the client using the set status, headers and body values.
 * `respond(status, headers, body)` - Respond to the client using the given *status*, *headers* and *body*. It ignores any previously set value.
 
-* `serve_file(file, headers)` - Serve the given file with headers ignoring previously set values
+* `serve_file(file, headers)` - Serve the given file with headers ignoring previously set values.
 
 ## Running tests
 
