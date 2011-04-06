@@ -35,8 +35,6 @@ module Chat
       end
     end
 
-    protected
-
     def init()
       Process.flag('trap_exit, true)
       { 'ok, self }
@@ -110,7 +108,7 @@ module Chat
     def socket_loop(socket)
       receive
       match {'browser, data}
-        string = String.new(data)
+        string = data.to_bin
         IO.puts "SOCKET BROWSER #{string}"
 
         case string.split(~r" \<\- ", 2)
@@ -124,7 +122,7 @@ module Chat
 
         socket_loop(socket)
       match { 'chat_server, { 'message, message } }
-        string = String.new(message)
+        string = message.to_bin
         socket.send "output <- #{string}"
         socket_loop(socket)
       match other
