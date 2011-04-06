@@ -7,8 +7,4 @@ object Misultin::ServerTest
   def port
     3002
   end
-
-  def serve_file_with_headers_test
-    % Not supported
-  end
 end

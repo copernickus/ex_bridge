@@ -9,12 +9,8 @@ object ExBridge::Misultin::Response
     status
   end
 
-  def serve_file(path, {:} := {:})
-    self.serve_file_conditionally path, -> Erlang.apply(@request, 'file, [File.join(@docroot, path).to_bin])
-  end
-
-  def serve_file(_path, _headers)
-    self.error { 'notsupported, "Sending headers while serving file not supported by misultin" }
+  def serve_file(path, headers := {:})
+    serve_file_conditionally path, -> Erlang.apply(@request, 'file, [File.join(@docroot, path).to_bin, convert_headers(headers)])
   end
 
   private
