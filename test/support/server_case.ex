@@ -79,6 +79,10 @@ module ServerCase
     { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/request_headers", "unknown-header": "set")
   end
 
+  def request_cookies_test
+    { 200, _headers, _body } = HTTPClient.request('get, "http://127.0.0.1:#{self.port}/request_cookies", "Cookie": "key1=value1; key2=value2")
+  end
+
   % Server loops
 
   def respond_loop(_request, response)
@@ -138,8 +142,14 @@ module ServerCase
 
   def request_headers_loop request, response
     ["127.0.0.1", _] = request.headers["Host"].split(~r(:))
+    request = request.memoize!('headers)
     "0" = request.headers["Content-Length"]
     "set" = request.headers["Unknown-Header"]
+    response.respond 200, {}, "Ok"
+  end
+
+  def request_cookies_loop request, response
+    ["127.0.0.1"] = request.cookies
     response.respond 200, {}, "Ok"
   end
 end

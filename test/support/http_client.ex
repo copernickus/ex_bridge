@@ -25,5 +25,9 @@ module HTTPClient
     def [](key)
       Erlang.proplists.get_all_values(key, @list)
     end
+
+    def inspect
+      @list.inspect
+    end
   end
 end

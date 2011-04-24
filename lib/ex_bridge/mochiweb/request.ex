@@ -21,6 +21,13 @@ object ExBridge::Mochiweb::Request
     end
   end
 
+  def cookies
+    @cookies || begin
+      list = Erlang.apply(@request, 'parse_cookie, [])
+      OrderedDict.from_list list.map(-> ({x,y}) { String.new(x), String.new(y) })
+    end
+  end
+
   def build_response
     ExBridge::Mochiweb::Response.new(@request, @options)
   end
