@@ -1,5 +1,3 @@
-% elixir: cache [ex_bridge/request, ex_bridge/response, ex_bridge/websocket]
-
 module ExBridge
   def request('mochiweb, request, options := {:})
     ExBridge::Mochiweb::Request.new(request, options)

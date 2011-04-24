@@ -1,5 +1,3 @@
-% elixir: cache
-
 module ExBridge::Request
   def initialize(request, options := {:})
     @('request: request, 'options: options || {:})

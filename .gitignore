@@ -1,2 +1,2 @@
-*.exb
+exbin/
 erl_crash.dump

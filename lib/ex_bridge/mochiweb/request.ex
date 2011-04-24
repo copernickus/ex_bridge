@@ -1,5 +1,3 @@
-% elixir: cache
-
 object ExBridge::Mochiweb::Request
   proto ExBridge::Request
 
@@ -24,7 +22,7 @@ object ExBridge::Mochiweb::Request
   def cookies
     @cookies || begin
       list = Erlang.apply(@request, 'parse_cookie, [])
-      OrderedDict.from_list list.map(-> ({x,y}) { String.new(x), String.new(y) })
+      OrderedDict.from_list list.map(-> ({x,y}) { x.to_bin, y.to_bin })
     end
   end
 

@@ -102,8 +102,8 @@ module ServerCase
   end
 
   def respond_file_loop(_request, response)
-    response = response.file "test/test_helper.ex"
-    "test/test_helper.ex" = response.file
+    response = response.file "test/test_helper.exs"
+    "test/test_helper.exs" = response.file
     response.respond
   end
 
@@ -112,19 +112,19 @@ module ServerCase
   end
 
   def serve_file_loop(_request, response)
-    response.serve_file "test/test_helper.ex"
+    response.serve_file "test/test_helper.exs"
   end
 
   def serve_file_with_headers_loop(_request, response)
-    response.serve_file "test/test_helper.ex", "Content-Disposition": "attachment; filename=\"cool.ex\""
+    response.serve_file "test/test_helper.exs", "Content-Disposition": "attachment; filename=\"cool.ex\""
   end
 
   def serve_unavailable_file_loop(_request, response)
-    response.serve_file "test/test_helper.ex.unknown"
+    response.serve_file "test/test_helper.exs.unknown"
   end
 
   def serve_forbidden_file_loop(_request, response)
-    response.serve_file "test/../test/test_helper.ex"
+    response.serve_file "test/../test/test_helper.exs"
   end
 
   def response_cookies_loop(_request, response)
@@ -149,7 +149,7 @@ module ServerCase
   end
 
   def request_cookies_loop request, response
-    ["127.0.0.1"] = request.cookies
+    {"key1": "value1", "key2": "value2"} = request.cookies
     response.respond 200, {}, "Ok"
   end
 end

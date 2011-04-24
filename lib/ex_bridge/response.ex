@@ -1,5 +1,3 @@
-% elixir: cache [date_time]
-
 module ExBridge::Response
   % TODO: Maybe an ordered dict is not the best/fastest way to represent the headers
   object Headers
@@ -94,7 +92,7 @@ module ExBridge::Response
       else
         joined = File.join(@docroot, path)
         if File.regular?(joined)
-          function()
+          function.()
           200
         else
           self.respond(404, {:}, "Not Found")

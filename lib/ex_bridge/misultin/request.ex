@@ -1,5 +1,3 @@
-% elixir: cache
-
 object ExBridge::Misultin::Request
   proto ExBridge::Request
 

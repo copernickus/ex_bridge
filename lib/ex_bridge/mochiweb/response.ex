@@ -1,5 +1,3 @@
-% elixir: cache
-
 object ExBridge::Mochiweb::Response
   proto ExBridge::Response
 
