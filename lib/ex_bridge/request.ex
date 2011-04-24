@@ -15,6 +15,23 @@ module ExBridge::Request
     @('cookies: self.cookies)
   end
 
+  def cookies
+    @cookies || begin
+      headers = self.headers
+      if raw_cookies = headers["Cookie"]
+        list = raw_cookies.split(~r";").foldl [], do (cookie, acc)
+          case cookie.strip.split(~r"=", 2)
+          when [first, second] then [{first,second}|acc]
+          else % Nothing
+          end
+        end
+        OrderedDict.from_list list.flatten
+      else
+        {:}
+      end
+    end
+  end
+
   % Helpers
 
   def upcase_headers(object)
