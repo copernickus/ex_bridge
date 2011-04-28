@@ -21,7 +21,7 @@ module ExBridge::Request
       if raw_cookies = headers["Cookie"]
         list = raw_cookies.split(~r";").foldl [], do (cookie, acc)
           case cookie.strip.split(~r"=", 2)
-          when [first, second] then [{first,second}|acc]
+          match [first, second] then [{first,second}|acc]
           else % Nothing
           end
         end
